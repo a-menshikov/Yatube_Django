@@ -23,12 +23,12 @@ class PostViewsTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.small_gif = (
-             b'\x47\x49\x46\x38\x39\x61\x02\x00'
-             b'\x01\x00\x80\x00\x00\x00\x00\x00'
-             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-             b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-             b'\x0A\x00\x3B'
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
         )
         cls.uploaded = SimpleUploadedFile(
             name='small.gif',
@@ -347,11 +347,11 @@ class FollowViewsTest(TestCase):
                                                            ))
         first_object = response_follower.context['page_obj'].object_list[0]
         post_values = {
-                first_object.text: self.post.text,
-                first_object.pub_date: self.post.pub_date,
-                first_object.author: self.post.author,
-                first_object.group: self.post.group,
-            }
+            first_object.text: self.post.text,
+            first_object.pub_date: self.post.pub_date,
+            first_object.author: self.post.author,
+            first_object.group: self.post.group,
+        }
         for resieve_value, etalon_value in post_values.items():
             with self.subTest(resieve_value=resieve_value,
                               etalon_value=etalon_value):

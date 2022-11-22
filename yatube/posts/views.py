@@ -155,7 +155,7 @@ def follow_index(request):
     user_object = request.user
     authors = user_object.follower.all().values_list('author', flat=True)
     posts = Post.objects.select_related('author').select_related(
-            'group').filter(author__id__in=authors)
+        'group').filter(author__id__in=authors)
     template = "posts/follow.html"
     page_obj = paginate_queryset(request, posts, POSTS_ON_PAGE)
     context = {
