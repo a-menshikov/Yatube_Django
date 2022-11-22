@@ -22,7 +22,7 @@ class PostViewsTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.small_gif = (
+        small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
             b'\x01\x00\x80\x00\x00\x00\x00\x00'
             b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
@@ -30,9 +30,9 @@ class PostViewsTests(TestCase):
             b'\x02\x00\x01\x00\x00\x02\x02\x0C'
             b'\x0A\x00\x3B'
         )
-        cls.uploaded = SimpleUploadedFile(
+        uploaded = SimpleUploadedFile(
             name='small.gif',
-            content=cls.small_gif,
+            content=small_gif,
             content_type='image/gif'
         )
         cls.user_author = User.objects.create_user(username='author')
@@ -50,7 +50,7 @@ class PostViewsTests(TestCase):
             author=cls.user_author,
             group=cls.group,
             text='Lorem ipsum dolor sit amet',
-            image=cls.uploaded,
+            image=uploaded,
         )
         cls.comment = Comment.objects.create(
             post=cls.post,
