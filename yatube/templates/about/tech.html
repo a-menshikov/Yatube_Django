@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+{% comment %} Колонки с отступом сверху и снизу {% endcomment %}
+<div class="row">
+  <h1 align=center>Вот что я умею?</h1>
+  <aside class="col-12 col-md-3">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        Python
+      </li>
+      <li class="list-group-item">
+        Django
+      </li>
+      <li class="list-group-item">
+        SQL-lite, PostgreSQL
+      </li>
+      <li class="list-group-item">
+        Linux/WSL
+      </li>
+      <li class="list-group-item">
+        Git/Github
+      </li>
+      <li class="list-group-item">
+        Bootstrap
+      </li>
+      <li class="list-group-item">
+        DataLens, Tableau 
+      </li>
+      <li class="list-group-item">
+        MS Excel, PowerQuery, PowerBI
+      </li>
+      <li class="list-group-item">
+        Google 
+      </li>
+    </ul>
+  </aside>
+  <article class="col-12 col-md-9">
+    <img src="/static/img/tech_mem.png" width="800" height="500">
+  </article>
+</div>
+{% endblock %} 

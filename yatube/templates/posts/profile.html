@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}
+    Профайл пользователя {{ user_first_and_last_names }}
+{% endblock %} 
+{% block content %}
+    {% load thumbnail %}
+    <div class="container py-5">        
+        <h1>Все посты пользователя {{ user_object.get_full_name }} </h1>
+        <h3>Всего постов: {{ user_object.posts_count }} </h3>
+        {% if request.user.username != user_object.username%}
+            {% if following %}
+              <div class="mb-5">
+                <a
+                    class="btn btn-lg btn-secondary"
+                    href="{% url 'posts:profile_unfollow' user_object.username %}" role="button"
+                >
+                Отписаться
+                </a>
+              </div>
+            {% else %}
+              <div class="mb-5">
+                <a
+                    class="btn btn-lg btn-primary"
+                    href="{% url 'posts:profile_follow' user_object.username %}" role="button"
+                >
+                    Подписаться
+                </a>
+              </div>
+            {% endif %}
+        {% endif %}
+    {% for post in page_obj %}
+        <article>
+            <ul>
+                <li>
+                Автор: <a href="{% url 'posts:profile' user_object.username %}">{{ user_object.get_full_name }}</a>
+                </li>
+                <li>
+                Дата публикации: {{ post.pub_date|date:"j F Y" }}
+                </li>
+            </ul>
+            <p>
+                {% thumbnail post.image "1200x300" crop="center" upscale=True as im %}
+                    <img class="card-img my-2" src="{{ im.url }}">
+                {% endthumbnail %}                
+                {{ post.text|safe }}
+            </p>
+            <a href="{% url 'posts:post_detail' post.id %}">Подробная информация о публикации</a>
+        </article>
+            {% if post.group %}   
+                <a href="{% url 'posts:group_posts' post.group.slug %}">
+                    Все записи группы <b>{{ post.group.title }}</b> 
+                </a>
+            {% endif %}     
+            {% if not forloop.last %}
+                <hr>
+            {% endif %}
+    
+    {% endfor%}
+    
+    {% include 'posts/includes/paginator.html' %}
+    
+    </div>
+{% endblock %}

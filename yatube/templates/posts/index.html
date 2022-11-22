@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}
+  Это главная страница проекта Yatube
+{% endblock %} 
+{% block content %}
+  {% load thumbnail %}
+  <div class="container py-5">     
+    <h1>Последние обновления на сайте</h1>
+    </article>
+    <hr>
+      {% load cache %}
+      {% include 'posts/includes/switcher.html' %}
+      {% cache 20 index_page %}
+      {% for post in page_obj %}
+        <article>
+            <ul>
+            <li>
+              <b>Автор:</b> {{ post.author.first_name }} {{ post.author.last_name }}
+            </li>
+            <li>
+              <b>Сообщество:</b> {{ post.group.title }}
+            </li>
+            <li>
+              <b>Дата публикации:</b> {{ post.pub_date|date:"j F Y" }}
+            </li>
+            </ul>      
+            <p>
+              {% thumbnail post.image "1200x300" crop="center" upscale=True as im %}
+                <img class="card-img my-2" src="{{ im.url }}">
+              {% endthumbnail %}
+              {{ post.text|safe }}
+            </p>         
+        </article>
+        {% if post.group %}   
+          <a href="{% url 'posts:group_posts' post.group.slug %}">
+            Больше постов <b>{{ post.group.title }}</b> 
+          </a>
+        {% endif %}
+        {% if not forloop.last %}
+          <hr>
+        {% endif %}
+    {% endfor%}
+    {% endcache %} 
+    {% include 'posts/includes/paginator.html' %}
+  </div>
+{% endblock %}>
