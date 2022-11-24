@@ -108,7 +108,6 @@ class PostViewsTests(TestCase):
 
     def test_index_page_show_correct_context(self):
         """Главная страница возвращает корректный контекст."""
-        cache.clear()
         response = self.authorized_client.get(reverse('posts:index'))
         page_objects = response.context['page_obj'].object_list
         self.assertIsInstance(page_objects, list)
@@ -179,19 +178,10 @@ class PostViewsTests(TestCase):
         for reverse_url in reverse_list:
             response = self.authorized_client.get(reverse_url)
             first_object = response.context['page_obj'].object_list[0]
-            post_values = {
-                first_object.text: self.post.text,
-                first_object.pub_date: self.post.pub_date,
-                first_object.author: self.post.author,
-                first_object.group: self.post.group,
-            }
-            for resieve_value, etalon_value in post_values.items():
-                with self.subTest(resieve_value=resieve_value,
-                                  etalon_value=etalon_value):
-                    self.assertEqual(resieve_value, etalon_value)
+            self.assertEqual(first_object, self.post)
         wrong_group_reverse = reverse('posts:group_posts',
                                       kwargs={'slug':
-                                              PostViewsTests.wrong_group.slug})
+                                              self.wrong_group.slug})
         wrong_response = self.authorized_client.get(wrong_group_reverse)
         self.assertEqual(len(wrong_response.context['page_obj']), 0)
 
@@ -287,7 +277,7 @@ class CacheViewsTest(TestCase):
 
 
 class FollowViewsTest(TestCase):
-    """Тестирование aфункционала подписок."""
+    """Тестирование функционала подписок."""
 
     @classmethod
     def setUpClass(cls):
@@ -314,9 +304,8 @@ class FollowViewsTest(TestCase):
         self.auth_client_no_follower = Client()
         self.auth_client_no_follower.force_login(self.user_no_follower)
 
-    def test_follow_unfollow_process(self):
-        """Проверка возможности подписки и отписки
-        для авторизованного пользователя."""
+    def test_follow_process(self):
+        """Проверка возможности подписки для авторизованного пользователя."""
         self.auth_client_follower.get(reverse
                                       ('posts:profile_follow',
                                        kwargs={'username':
@@ -325,6 +314,12 @@ class FollowViewsTest(TestCase):
         self.assertTrue(Follow.objects.filter(user=self.user_follower,
                                               author=self.user_author
                                               ).exists())
+
+    def test_unfollow_process(self):
+        """Проверка возможности отписки для авторизованного пользователя."""
+        Follow.objects.create(user=self.user_follower,
+                              author=self.user_author,
+                              )
         self.auth_client_follower.get(reverse
                                       ('posts:profile_unfollow',
                                        kwargs={'username':
@@ -347,16 +342,7 @@ class FollowViewsTest(TestCase):
                                                           ('posts:follow_index'
                                                            ))
         first_object = response_follower.context['page_obj'].object_list[0]
-        post_values = {
-            first_object.text: self.post.text,
-            first_object.pub_date: self.post.pub_date,
-            first_object.author: self.post.author,
-            first_object.group: self.post.group,
-        }
-        for resieve_value, etalon_value in post_values.items():
-            with self.subTest(resieve_value=resieve_value,
-                              etalon_value=etalon_value):
-                self.assertEqual(resieve_value, etalon_value)
+        self.assertEqual(first_object, self.post)
         response_no_follower = self.auth_client_no_follower.get(
             reverse('posts:follow_index'))
         self.assertEqual(len(response_no_follower.context['page_obj']), 0)
