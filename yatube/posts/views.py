@@ -169,10 +169,9 @@ def profile_follow(request, username):
     """Подписаться на автора"""
     if request.user.username == username:
         return redirect('posts:profile', username=username)
-    if User.objects.filter(username=username).exists() is False:
-        return redirect('posts:profile', username=request.user.username)
+    author = get_object_or_404(User, username=username)
     Follow.objects.get_or_create(user=request.user,
-                                 author=User.objects.get(username=username),
+                                 author=author,
                                  )
     return redirect('posts:profile', username=username)
 
@@ -180,12 +179,11 @@ def profile_follow(request, username):
 @login_required
 def profile_unfollow(request, username):
     """Отписаться от автора"""
-    if User.objects.filter(username=username).exists() is False:
-        return redirect('posts:profile', username=request.user.username)
+    author = get_object_or_404(User, username=username)
     if Follow.objects.filter(user=request.user,
-                             author=User.objects.get(username=username)
+                             author=author,
                              ).exists() is False:
         return redirect('posts:profile', username=username)
     Follow.objects.filter(user=request.user,
-                          author=User.objects.get(username=username)).delete()
+                          author=author).delete()
     return redirect('posts:profile', username=username)
